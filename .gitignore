@@ -1,0 +1,80 @@
+# Python Virtual Environments
+graphrag_env/
+venv/
+env/
+.env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# CRITICAL: Environment variables with API keys
+.env
+.env.local
+.env.*.local
+
+# Input PDFs (users add their own)
+input/
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated logs
+*.log
+logs/
+pipeline_debug.log
+
+# GraphRAG Generated Output (recreated during processing)
+graphrag_output/output/
+graphrag_output/cache/
+graphrag_output/logs/
+graphrag_output/.env
+
+# Large input files (users should add their own PDFs)
+*.pdf
+*.zip
+*.tar.gz
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Processing results (regenerated each run)
+pipeline_results.json
+
+# Docker volumes (created at runtime)
+StirlingPDF/
+
+# Keep but ignore contents: prompts directory structure but not custom prompts
+graphrag_output/prompts/*.txt
+!graphrag_output/prompts/.gitkeep
