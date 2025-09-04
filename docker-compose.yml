@@ -1,5 +1,3 @@
-version: '3.3'
-
 services:
   stirling-pdf:
     image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
@@ -7,14 +5,38 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - ./StirlingPDF/trainingData:/usr/share/tessdata  # Required for extra OCR languages
+      - ./StirlingPDF/trainingData:/usr/share/tessdata
       - ./StirlingPDF/extraConfigs:/configs
       - ./StirlingPDF/customFiles:/customFiles/
       - ./StirlingPDF/logs:/logs/
       - ./StirlingPDF/pipeline:/pipeline/
     environment:
-      - DISABLE_ADDITIONAL_FEATURES=false  # Keep all features for full functionality
+      - DISABLE_ADDITIONAL_FEATURES=false
       - LANGS=en_GB
-      - DOCKER_ENABLE_SECURITY=false       # Disable security for local use
-      - SECURITY_ENABLE_LOGIN=false        # No login required for offline use
+      - DOCKER_ENABLE_SECURITY=false
+      - SECURITY_ENABLE_LOGIN=false
     restart: unless-stopped
+    networks:
+      - graphrag-network
+
+  graphrag-pipeline:
+    build: .
+    container_name: graphrag-pipeline
+    depends_on:
+      - stirling-pdf
+    volumes:
+      - ./input:/app/input
+      - graphrag_output:/app/graphrag_output
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GRAPHRAG_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - graphrag-network
+
+volumes:
+  graphrag_output:
+
+networks:
+  graphrag-network:
+    driver: bridge

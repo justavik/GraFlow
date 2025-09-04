@@ -87,10 +87,10 @@ Write-Host "🐳 Building and starting containers..." -ForegroundColor Blue
 
 try {
     # Build the image first
-    docker-compose -f docker-compose.full.yml build --no-cache
+    docker-compose build --no-cache
     
     # Start the pipeline
-    docker-compose -f docker-compose.full.yml up --abort-on-container-exit
+    docker-compose up --abort-on-container-exit
     
     Write-Host "✨ Pipeline completed!" -ForegroundColor Green
     Write-Host "📊 Your knowledge graph data is preserved in Docker volume 'graphrag_output'" -ForegroundColor Cyan
@@ -101,5 +101,5 @@ catch {
 finally {
     # Cleanup
     Write-Host "🧹 Cleaning up containers..." -ForegroundColor Blue
-    docker-compose -f docker-compose.full.yml down
+    docker-compose down
 }
