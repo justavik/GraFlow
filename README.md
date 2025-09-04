@@ -1,13 +1,61 @@
 # PDF to GraphRAG Knowledge Pipeline
 
-A complete end-to-end pipeline that converts PDF documents into queryable knowledge graphs using GraphRAG (Graph Retrieval-Augmented Generation) with Groq's fast LLM processing.
+A complete pipeline for converting PDF documents into queryable knowledge graphs using Microsoft's GraphRAG framework with Groq LLM integration.
 
-## 🎯 What This Pipeline Does
+## 🚀 Quick Start
 
-1. **PDF Processing**: Extracts text from PDFs using Stirling PDF API (with OCR fallback)
-2. **Text Cleaning**: Processes and cleans extracted text for optimal GraphRAG ingestion
-3. **Knowledge Graph Generation**: Creates entities, relationships, and communities using GraphRAG
-4. **Intelligent Querying**: Enables natural language queries over the knowledge graph
+### Prerequisites
+- Docker Desktop
+- Groq API key (free at [console.groq.com](https://console.groq.com))
+- OpenAI API key (for embeddings)
+
+### One-Command Setup
+1. Add your PDF files to the `./input/` directory
+2. Run the pipeline:
+   ```powershell
+   .\run-graphrag.ps1
+   ```
+
+That's it! The script will:
+- Prompt for your API keys
+- Start PDF processing service (Stirling PDF)
+- Extract text from your PDFs with OCR fallback
+- Generate knowledge graph with AI analysis
+- Open interactive query interface
+
+### Query Interface
+Once processing completes, use these commands:
+```bash
+# Search specific entities and relationships
+local What are the main AWS storage services?
+
+# Search broad themes and summaries
+global What is the overall architecture approach?
+
+# Exit
+exit
+```
+
+## 📁 Project Structure
+
+```
+├── pipeline_orchestrator.py    # Main orchestration script
+├── run-graphrag.ps1            # One-command launcher (Windows)
+├── docker-compose.yml          # Container orchestration
+├── Dockerfile                  # Pipeline containerization
+├── settings_fast.yaml          # GraphRAG configuration (rate-limited)
+├── requirements.txt            # Python dependencies
+├── input/                      # Place your PDF files here
+├── graphrag_output/            # Generated knowledge graph data
+└── demo/                       # Professional demo setup
+```
+
+## 🎯 For Demonstrations
+
+If you need persistent containers for demos or presentations, see the [`demo/`](./demo/) folder which includes:
+- One-time container setup that persists between sessions
+- Professional demo workflow
+- Quick restart commands for new PDFs
 
 ## 🏗️ Architecture
 
