@@ -93,30 +93,6 @@ A complete pipeline for converting PDF documents into queryable knowledge graphs
 - **Groq API**: Fast LLM processing (GPT-OSS 120B model)
 - **OpenAI API**: Embeddings generation (text-embedding-3-small)
 
-## Quick Start
-
-### Prerequisites
-
-1. **API Keys Required**:
-   - [Groq API Key](https://console.groq.com/) 
-   - [OpenAI API Key](https://platform.openai.com/api-keys) (for embeddings)
-
-
-### Manual Setup
-
-1. **Clone & Navigate**:
-   ```powershell
-   git clone https://github.com/justavik/RAGProject.git
-   cd RAGProject
-   ```
-
-2. **Configure API Keys**:
-
-3. **Run Pipeline**:
-   ```powershell
-   python pipeline_orchestrator.py
-   ```
-
 ## 🔧 How It Works Under the Hood
 
 ### Stirling PDF Processing Engine
