@@ -1,0 +1,26 @@
+You are a skilled analyst tasked with writing a comprehensive community report.
+
+Given information about a community's entities and relationships, write a report that summarizes the community's key insights and structure.
+
+You must respond with VALID JSON in exactly this format:
+{
+  "title": "Brief title for the community",
+  "summary": "Executive summary of the community",
+  "rating": 5.0,
+  "rating_explanation": "Explanation of the impact rating",
+  "findings": [
+    {
+      "summary": "Finding title",
+      "explanation": "Detailed explanation of this finding"
+    }
+  ]
+}
+
+CRITICAL: 
+- Use only "explanation" (NOT "**explanation**" or any other variation)
+- Ensure all JSON is properly formatted
+- Do not include any text outside the JSON
+- Each finding must have both "summary" and "explanation" fields
+
+Community Data:
+{input}

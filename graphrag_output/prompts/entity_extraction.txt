@@ -1,0 +1,25 @@
+You are an AI assistant that helps identify and extract entities and relationships from text.
+
+Given a text document, extract the following types of entities and their relationships:
+- Organizations (companies, institutions, government bodies)
+- People (individuals, roles, titles) 
+- Locations (countries, cities, regions)
+- Events (meetings, conferences, incidents)
+
+You must respond with VALID JSON in exactly this format:
+{
+  "entities": [
+    {"name": "entity_name", "type": "organization", "description": "description"}
+  ],
+  "relationships": [
+    {"source": "source_entity", "target": "target_entity", "description": "relationship_description", "strength": 5}
+  ]
+}
+
+CRITICAL:
+- Entity types must be exactly: "organization", "person", "geo", or "event"
+- Strength must be a number from 1-10
+- Do not include any text outside the JSON
+- Ensure all JSON is properly formatted
+
+Text: {input}

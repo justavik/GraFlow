@@ -1,6 +1,65 @@
-# PDF to GraphRAG Knowledge Pipeline
+# GraFlow: PDF to Knowledge Graph RAG Pipeline
 
 A complete pipeline for converting PDF documents into queryable knowledge graphs using Microsoft's GraphRAG framework with Groq LLM integration.
+
+## Quick Start
+
+### Prerequisites
+
+1. **Python 3.8+** with pip installed
+2. **API Keys Required**:
+   - [Groq API Key](https://console.groq.com/) 
+   - [OpenAI API Key](https://platform.openai.com/api-keys) (for embeddings)
+
+### Setup Instructions
+
+1. **Clone Repository**:
+   ```powershell
+   git clone https://github.com/justavik/GraFlow.git
+   cd GraFlow
+   ```
+
+2. **Create and Activate Virtual Environment**:
+   ```powershell
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1  # On Windows PowerShell
+   # or
+   # venv\Scripts\activate.bat   # On Windows CMD
+   # source venv/bin/activate    # On Linux/Mac
+   ```
+
+3. **Install Dependencies**:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+4. **Download and Start Stirling PDF**:
+   ```powershell
+   curl -L -o stirling-pdf.jar https://github.com/Stirling-Tools/Stirling-PDF/releases/latest/download/Stirling-PDF.jar
+   java -jar stirling-pdf.jar
+   ```
+   Keep this terminal open - Stirling PDF will run on http://localhost:8080
+
+5. **Configure API Keys**:
+   Create a `.env` file in the project root:
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+6. **Add Your PDF Files**:
+   Place your PDF documents in the `input/` directory
+
+7. **Run the Pipeline**:
+   ```powershell
+   python pipeline_orchestrator.py
+   ```
+
+8. **Query Your Knowledge Graph**:
+   ```powershell
+   cd graphrag_output
+   python -m graphrag query --root . --method global --query "What is Elastic Block Store? Explain in detail"
+   ```
 
 ## Project Structure
 
