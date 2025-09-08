@@ -7,22 +7,29 @@ to GraphRAG knowledge graphs and inference capabilities.
 """
 
 import asyncio
+import io
 import json
 import logging
 import os
+import re
 import shutil
+import subprocess
 import sys
+import threading
+import time
+import zipfile
 from pathlib import Path
+from queue import Queue, Empty
 from typing import Dict, List, Optional, Tuple
-
-import requests
-import yaml
 from dataclasses import dataclass
 from datetime import datetime
 
+import requests
+import yaml
+
 # Load environment variables from .env file
 try:
-    from dotenv import load_dotenv  # type: ignore
+    from dotenv import load_dotenv  
     load_dotenv()
     print("Loaded environment variables from .env file")
 except ImportError:
@@ -32,7 +39,7 @@ except ImportError:
 @dataclass
 class PipelineConfig:
     # Stirling PDF settings
-    stirling_url: str = "http://localhost:8080"
+    stirling_url: str = "http://localhost:8081"
     
     # Input/Output paths
     input_pdf_dir: str = "./input"
@@ -44,12 +51,6 @@ class PipelineConfig:
     ocr_languages: Optional[List[str]] = None
     use_ocr: bool = True
     clean_text: bool = True
-    
-    # GraphRAG settings
-    chunk_size: int = 1200  # Larger chunks for better context
-    chunk_overlap: int = 100
-    embedding_model: str = "text-embedding-3-small"
-    llm_model: str = "gpt-4o-mini"
     
     def __post_init__(self):
         if self.ocr_languages is None:
@@ -117,8 +118,6 @@ class PDFProcessor:
             
             # Handle zip response (PDF + text file)
             if response.headers.get('content-type') == 'application/octet-stream':
-                import zipfile
-                import io
                 
                 zip_buffer = io.BytesIO(response.content)
                 with zipfile.ZipFile(zip_buffer, 'r') as zip_file:
@@ -144,7 +143,6 @@ class TextProcessor:
     @staticmethod
     def clean_text(text: str) -> str:
         """Clean and normalize extracted text"""
-        import re
         
         # Remove excessive whitespace
         text = re.sub(r'\s+', ' ', text)
@@ -214,11 +212,6 @@ class GraphRAGManager:
     
     async def run_indexing(self):
         """Run GraphRAG indexing process with comprehensive monitoring"""
-        import subprocess
-        import sys
-        import threading
-        import time
-        from queue import Queue, Empty
         
         # Check if initialization is needed BEFORE changing directories
         settings_file = self.graphrag_dir / "settings.yaml"
@@ -238,7 +231,7 @@ class GraphRAGManager:
             except Exception as e:
                 queue.put((prefix, f"ERROR reading output: {e}"))
         
-        def monitor_progress(process, stdout_queue, stderr_queue):
+        def monitor_progress(process, stdout_queue, stderr_queue, start_time):
             """Monitor and log progress with timeout detection"""
             last_output_time = time.time()
             output_timeout = 300  # 5 minutes without output = timeout
@@ -370,7 +363,7 @@ class GraphRAGManager:
             
             # Monitor progress
             try:
-                monitor_progress(process, stdout_queue, stderr_queue)
+                monitor_progress(process, stdout_queue, stderr_queue, start_time)
                 
                 # Wait for completion
                 return_code = process.wait()
@@ -437,8 +430,6 @@ class GraphRAGManager:
     
     async def query(self, question: str, query_type: str = "global") -> str:
         """Query the GraphRAG knowledge graph"""
-        import subprocess
-        import sys
         
         original_cwd = os.getcwd()
         os.chdir(self.graphrag_dir)
@@ -524,7 +515,8 @@ class PipelineOrchestrator:
             
             # Validate Stirling PDF connection
             try:
-                response = self.pdf_processor.session.get(f"{self.config.stirling_url}/api/v1/info", timeout=10)
+                # Try to access the main page instead of the non-existent /api/v1/info endpoint
+                response = self.pdf_processor.session.get(f"{self.config.stirling_url}/", timeout=10)
                 if response.status_code == 200:
                     log_stage("Stirling PDF Connection", "completed", "API accessible")
                 else:
@@ -610,20 +602,6 @@ class PipelineOrchestrator:
             
             # Step 3: Run GraphRAG indexing
             log_stage("GraphRAG Indexing", "starting")
-            print("\n" + "="*60)
-            print("🤖 STARTING GRAPHRAG INDEXING")
-            print("="*60)
-            print("💡 PERFORMANCE INFO:")
-            print("   • This process is primarily LIMITED BY:")
-            print("     - OpenAI API rate limits (biggest bottleneck)")
-            print("     - Network latency to OpenAI servers")
-            print("     - Token processing quotas")
-            print("   • GPU acceleration WON'T help much because:")
-            print("     - Most work happens on OpenAI's servers")
-            print("     - Local compute is minimal (just API calls)")
-            print("     - Network I/O is the limiting factor")
-            print("   • To speed up: Use faster OpenAI models (gpt-4o-mini vs gpt-4-turbo)")
-            print("="*60)
             
             await self.graphrag_manager.run_indexing()
             log_stage("GraphRAG Indexing", "completed")
@@ -713,27 +691,27 @@ async def main():
         print(f"Pipeline completed! Results saved to {results_file}")
         
         # Interactive query loop
-        print("\nKnowledge graph is ready! You can now ask questions.")
-        print("Type 'quit' to exit, 'local:' prefix for local queries")
+        # print("\nKnowledge graph is ready! You can now ask questions.")
+        # print("Type 'quit' to exit, 'local:' prefix for local queries")
         
-        while True:
-            question = input("\nEnter your question: ").strip()
+        # while True:
+        #     question = input("\nEnter your question: ").strip()
             
-            if question.lower() == 'quit':
-                break
+        #     if question.lower() == 'quit':
+        #         break
             
-            if question.startswith('local:'):
-                query_type = 'local'
-                question = question[6:].strip()
-            else:
-                query_type = 'global'
+        #     if question.startswith('local:'):
+        #         query_type = 'local'
+        #         question = question[6:].strip()
+        #     else:
+        #         query_type = 'global'
             
-            try:
-                answer = await pipeline.query_knowledge_graph(question, query_type)
-                print(f"\nAnswer ({query_type} search):")
-                print(answer)
-            except Exception as e:
-                print(f"Query failed: {e}")
+        #     try:
+        #         answer = await pipeline.query_knowledge_graph(question, query_type)
+        #         print(f"\nAnswer ({query_type} search):")
+        #         print(answer)
+        #     except Exception as e:
+        #         print(f"Query failed: {e}")
     
     except Exception as e:
         print(f"Pipeline failed: {e}")

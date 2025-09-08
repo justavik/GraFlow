@@ -13,18 +13,32 @@ venv/
 .venv/
 graphrag_env/
 
-# GraphRAG Generated Data (exclude from repository)
+# Pipeline Processing Directories
+graphrag_input/
+processed_text/
+input/
+logs/
+
+# Pipeline Results
+pipeline_results.json
+
+# Stirling PDF (downloadable by user)
+StirlingPDF/
+stirling-pdf.jar
+
+# GraphRAG Generated Data (exclude most but preserve config)
 graphrag_output/
+# But preserve these specific files/folders in graphrag_output:
+!graphrag_output/settings.yaml
+!graphrag_output/prompts/
+!graphrag_output/prompts/**
+
+# Generated data files
 *.parquet
 *.json
-logs/
 
 # PDF Files (users add their own)
 *.pdf
-input/*.pdf
-
-# Docker Volumes and Data
-StirlingPDF/
 
 # IDE and Editor
 .vscode/
@@ -41,7 +55,3 @@ Thumbs.db
 *.log
 *.tmp
 *.temp
-
-# Keep these structure files
-!input/.gitkeep
-!graphrag_output/.gitkeep
