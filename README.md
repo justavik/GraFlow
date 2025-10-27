@@ -1,41 +1,5 @@
 # GraphRAG Chunk Size Study - Reproducibility Repository
 
-**Research Paper:** *"Chunk Size Effects on Hallucination Rates in
- GraphRAG Systems: An Empirical Investigation"*
-
-This repository contains the complete implementation, data, and analysis tools for our systematic investigation of chunk size effects on hallucination rates in Microsoft GraphRAG knowledge graph construction.
-
-## Paper Abstract
-
-Graph-based Retrieval-Augmented Generation
- (GraphRAG) systems have emerged as powerful tools for
- knowledge extraction and query-focused summarization, yet
- their performance characteristics across varying text chunking
- strategies remain largely unexplored. This paper presents a
- systematic empirical investigation into the relationship between
- chunk size and hallucination rates in Microsoft’s GraphRAG
- pipeline. We conducted a comprehensive analysis using a
- 500-page AWS certification guide processed through GraphRAG
- with seven distinct chunk sizes ranging from 800 to 3200
- tokens. Using SelfCheckGPT for hallucination detection, we
- demonstrate a strong positive correlation (R = 0.937) between
- chunk size and hallucination rate, with entity-level hallucinations
- increasing from 22.70% at 800 tokens to 43.95% at 3200 tokens,
- representing a 93.6% relative increase. Simultaneously, we
- observed an inverse relationship between chunk size and entity
- extraction density, with entity counts declining from 2522
- (800 tokens) to 1289 (3200 tokens). Our findings challenge the
- conventional assumption that larger context windows uniformly
- improve RAG system performance, revealing a critical accuracy
-efficiency trade-off. While larger chunks reduce processing
- time (from ∼12 minutes to ∼6 minutes), they significantly
- compromise information fidelity. This work provides the first
- quantitative characterization of chunk size effects on GraphRAG
- hallucination behavior and offers evidence-based guidelines for
- optimizing chunk size selection in production deployments.
-
----
-
 ## Repository Structure
 
 ```
